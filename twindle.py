@@ -22,16 +22,21 @@ def test_handle(h):
     return STATE[st]
 
 def run(test_len):
-    l = int(input('Enter handle length (<= 15): '))
-    if l > LENGTH or not l:
-        raise ValueError('Handle cannot be empty or longer than 15 characters')
+    l = int(input('Enter handle length: '))
+    if not l:
+        raise ValueError('Handle can not be empty')
+    if not 4 < l < LENGTH:
+        raise ValueError('Handle must be > 4 and < 16')
     
     print()
 
     for i in range(1, test_len + 1):
         handle = ''.join(choice(CHARS) for i in range(l))
         
-        print(Fore.WHITE + f'[{i}]'.ljust(5) + 'Trying: ' + Fore.YELLOW + handle + Fore.WHITE + ' - Result: ' + Style.BRIGHT, end = '')
+        print(
+            Fore.WHITE + f'[{i}]'.ljust(5) + 'Trying: ' +
+            Fore.YELLOW + handle + Fore.WHITE + ' - Result: '
+            + Style.BRIGHT, end = '')
         
         st, color = test_handle(handle)
         print(color + st)
