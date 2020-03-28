@@ -1,3 +1,5 @@
+# requests.head checks headers only
+# without downloading the whole page
 from requests import head
 from random import choice
 from colorama import Fore, Style, init
@@ -7,16 +9,18 @@ init(autoreset=True)
 
 BASEURL = 'https://mobile.twitter.com/'
 CHARS = 'abcdefghijklmnopqrstuvwxyz0123456789_'
-LENGTH = 15
-STATE = {404: ('Free', Fore.LIGHTGREEN_EX),
-        307: ('Suspended', Fore.RED),
-        200: ('Active', Fore.LIGHTMAGENTA_EX)}
+STATE = {
+    404: ('Free', Fore.LIGHTGREEN_EX),
+    307: ('Suspended', Fore.RED),
+    200: ('Active', Fore.LIGHTMAGENTA_EX)
+    }
 DATA = []
 
 def test_handle(h):
     global DATA
     st = head(BASEURL + h).status_code
     if st == 404:
+        # Avoid duplicates
         if not h in DATA:
             DATA.append(h)
     return STATE[st]
@@ -25,7 +29,7 @@ def run(test_len):
     l = int(input('Enter handle length: '))
     if not l:
         raise ValueError('Handle can not be empty')
-    if not 4 < l < LENGTH:
+    if not 4 < l < 16:
         raise ValueError('Handle must be > 4 and < 16')
     
     print()
@@ -36,7 +40,8 @@ def run(test_len):
         print(
             Fore.WHITE + f'[{i}]'.ljust(5) + 'Trying: ' +
             Fore.YELLOW + handle + Fore.WHITE + ' - Result: '
-            + Style.BRIGHT, end = '')
+            + Style.BRIGHT, end = ''
+            )
         
         st, color = test_handle(handle)
         print(color + st)
